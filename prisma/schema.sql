@@ -5,3 +5,6 @@ CREATE TABLE "public"."User" (
   admin BOOLEAN DEFAULT false,
   "createdAt" TIMESTAMP NOT NULL DEFAULT now()
 );
+
+ALTER TABLE "public"."User"
+  ADD COLUMN email VARCHAR(255) UNIQUE NOT NULL;

@@ -3,22 +3,24 @@ extend type Query {
 }
 
 extend type Mutation {
-  loginUser(data: LoginUserData!): AuthPayload!
-  signupUser(data: SignupUserData!): AuthPayload!
+  loginUser(input: LoginUserInput!): AuthPayload!
+  signupUser(input: SignupUserInput!): AuthPayload!
 }
 
 type User @key(fields: "id") {
   id: ID!
   name: String!
+  email: String!
   username: String!
+  admin: Boolean!
 }
 
-input LoginUserData {
+input LoginUserInput {
   username: String!
   password: String!
 }
 
-input SignupUserData {
+input SignupUserInput {
   name: String!
   email: String!
   username: String!
