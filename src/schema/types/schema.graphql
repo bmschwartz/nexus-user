@@ -2,8 +2,30 @@ extend type Query {
   me: User
 }
 
+extend type Mutation {
+  loginUser(data: LoginUserData!): AuthPayload!
+  signupUser(data: SignupUserData!): AuthPayload!
+}
+
 type User @key(fields: "id") {
   id: ID!
-  name: String
-  username: String
+  name: String!
+  username: String!
+}
+
+input LoginUserData {
+  username: String!
+  password: String!
+}
+
+input SignupUserData {
+  name: String!
+  email: String!
+  username: String!
+  password: String!
+}
+
+type AuthPayload {
+  token: String!
+  userId: String!
 }
