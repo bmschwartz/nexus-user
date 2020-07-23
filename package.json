@@ -1,6 +1,5 @@
 {
-  "name": "graphql-auth",
-  "license": "MIT",
+  "name": "monest-account-service",
   "scripts": {
     "start": "node dist/server",
     "clean": "rm -rf dist",
