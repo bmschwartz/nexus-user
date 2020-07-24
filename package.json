@@ -1,5 +1,5 @@
 {
-  "name": "monest-account-service",
+  "name": "monest-user-service",
   "scripts": {
     "start": "node dist/server",
     "clean": "rm -rf dist",
