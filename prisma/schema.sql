@@ -1,3 +1,6 @@
+DROP DATABASE IF EXISTS "monest_users";
+CREATE DATABASE "monest_users";
+
 CREATE TABLE "public"."User" (
   id SERIAL PRIMARY KEY NOT NULL,
   name VARCHAR(255) NOT NULL,
