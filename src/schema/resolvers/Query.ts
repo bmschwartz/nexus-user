@@ -1,8 +1,9 @@
-import { Context } from "../../context"
+import { GroupMembershipQuery } from "./GroupMembership"
+import { GroupQuery } from "./Group"
+import { UserQuery } from "./User"
 
 export const Query = {
-  async me(parent: any, args: any, ctx: Context) {
-    console.log(parent, args)
-    return await ctx.prisma.user.findMany()
-  }
+  ...UserQuery,
+  ...GroupQuery,
+  ...GroupMembershipQuery
 }

@@ -1,5 +1,8 @@
-DROP DATABASE IF EXISTS "monest_users";
-CREATE DATABASE "monest_users";
+DROP DATABASE IF EXISTS "monest_directory";
+CREATE DATABASE "monest_directory";
+
+CREATE TYPE MEMBERSHIP_STATUS AS ENUM('PENDING', 'APPROVED', 'DENIED');
+CREATE TYPE MEMBERSHIP_ROLE AS ENUM('MEMBER', 'ADMIN', 'TRADER');
 
 CREATE TABLE "public"."User" (
   id SERIAL PRIMARY KEY NOT NULL,
@@ -10,3 +13,26 @@ CREATE TABLE "public"."User" (
   admin BOOLEAN DEFAULT false,
   "createdAt" TIMESTAMP NOT NULL DEFAULT now()
 );
+
+CREATE TABLE "public"."Group" (
+  id SERIAL PRIMARY KEY NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT now()
+);
+
+CREATE TABLE "public"."GroupMembership" (
+  id SERIAL PRIMARY KEY NOT NULL,
+  "memberId" INTEGER NOT NULL,
+  "groupId" INTEGER NOT NULL,
+  "active" BOOLEAN NOT NULL DEFAULT FALSE,
+  "role" MEMBERSHIP_ROLE NOT NULL DEFAULT 'MEMBER',
+  "status" MEMBERSHIP_STATUS NOT NULL DEFAULT 'PENDING',
+  FOREIGN KEY ("groupId") REFERENCES "public"."Group"(id),
+  UNIQUE("memberId", "groupId")
+);
+
+ALTER TABLE "public"."Group"
+  ADD COLUMN "active" BOOLEAN NOT NULL DEFAULT TRUE;
+
+ALTER TABLE "public"."Group"
+  ADD CONSTRAINT unique_name UNIQUE("name");
