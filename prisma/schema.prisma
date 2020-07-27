@@ -7,45 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Group {
-  id          Int               @default(autoincrement()) @id
-  name        String            @unique
-  active      Boolean           @default(true)
-  createdAt   DateTime          @default(now())
-  memberships GroupMembership[]
-}
-
-model GroupMembership {
-  id       Int              @default(autoincrement()) @id
-  memberId Int
-  groupId  Int
-  active   Boolean          @default(false)
-  role     MembershipRole   @default(MEMBER)
-  status   MembershipStatus @default(PENDING)
-  group    Group            @relation(fields: [groupId], references: [id])
-  member   User             @relation(fields: [memberId], references: [id])
-
-  @@unique([memberId, groupId], name: "GroupMembership_memberId_groupId_key")
-}
-
 model User {
-  id          Int               @default(autoincrement()) @id
-  password    String
-  email       String
-  username    String            @unique
-  admin       Boolean?          @default(false)
-  createdAt   DateTime          @default(now())
-  memberships GroupMembership[]
-}
-
-enum MembershipRole {
-  ADMIN
-  MEMBER
-  TRADER
-}
-
-enum MembershipStatus {
-  APPROVED
-  DENIED
-  PENDING
+  id        Int      @default(autoincrement()) @id
+  password  String
+  email     String
+  username  String   @unique
+  admin     Boolean? @default(false)
+  createdAt DateTime @default(now())
 }

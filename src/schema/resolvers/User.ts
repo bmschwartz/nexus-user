@@ -6,9 +6,6 @@ export const UserQuery = {
     console.log(`me: ${ctx.user}`)
     return await ctx.prisma.user.findMany()
   },
-  async memberships(user: any, args: any, ctx: Context) {
-    return await ctx.prisma.groupMembership.findMany({ where: { memberId: user.id } })
-  }
 }
 
 export const UserMutations = {
