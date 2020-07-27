@@ -13,11 +13,12 @@ const server = new ApolloServer({
     }
   ]),
   engine: {
-    graphVariant: "current"
+    graphVariant: "current",
+    reportSchema: true
   },
   context: createContext
 });
 
-server.listen({ port: 4002 }).then(({ url }) => {
+server.listen({ port: 4003 }).then(({ url }) => {
   console.log(`🚀 Server ready at ${url}`)
 })
