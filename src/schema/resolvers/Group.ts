@@ -31,10 +31,10 @@ export const GroupMutations = {
       data: {
         name,
         active: true,
-        members: {
+        memberships: {
           create: {
             active: true,
-            memberId: Number(ownerId),
+            member: { connect: { id: Number(ownerId) } },
             status: "APPROVED",
             role: "ADMIN"
           }

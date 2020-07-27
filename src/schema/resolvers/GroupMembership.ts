@@ -3,9 +3,8 @@ import { GroupMembershipWhereInput } from "@prisma/client";
 
 export const GroupMembershipQuery = {
 
-  async myGroupMemberships(parent: any, args: any, ctx: Context) {
-    const memberId = 1 // todo: change this to "my id"
-    const { input: { role, status } } = args
+  async myMemberships(parent: any, args: any, ctx: Context) {
+    const { input: { userId: memberId, role, status } } = args
 
     const where: GroupMembershipWhereInput = { memberId }
 
@@ -51,7 +50,7 @@ export const GroupMembershipMutations = {
     return ctx.prisma.groupMembership.create({
       data: {
         group: { connect: { id: groupId } },
-        memberId,
+        member: { connect: { id: memberId } },
         active: true,
         role,
         status

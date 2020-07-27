@@ -1,29 +1,40 @@
+import jwt from "jsonwebtoken"
 import { Context } from "../../context"
 
 export const UserQuery = {
   async me(parent: any, args: any, ctx: Context) {
-    console.log(parent, args)
+    console.log(`me: ${ctx.user}`)
     return await ctx.prisma.user.findMany()
   },
   async memberships(user: any, args: any, ctx: Context) {
-    console.log(user)
     return await ctx.prisma.groupMembership.findMany({ where: { memberId: user.id } })
   }
 }
 
 export const UserMutations = {
   async loginUser(parent: any, args: any, ctx: Context) {
-    const { username, password } = args
+    const { input: { username, password } } = args
+    const user = await ctx.prisma.user.findOne({ where: { username } })
+    if (!user) {
+      throw new Error("User does not exist")
+    }
+    const { id: userId } = user
+    const token = jwt.sign(
+      { "https://monest.io/graphql": {} },
+      "appsecret321",
+      { algorithm: "HS256", subject: String(userId), expiresIn: "1d" },
+    )
+
     return {
-      token: "token123",
-      userId: 1
+      token,
+      userId,
     }
   },
 
   async signupUser(parent: any, args: any, ctx: Context) {
-    const { input: { name, email, username, password } } = args
+    const { input: { email, username, password } } = args
 
-    let user = await ctx.prisma.user.findOne({ where: { email } })
+    let user = await ctx.prisma.user.findOne({ where: { username } })
     if (user) {
       throw new Error("A user with that email already exits")
     }
@@ -33,7 +44,7 @@ export const UserMutations = {
       throw new Error("A user with that username already exits")
     }
 
-    user = await ctx.prisma.user.create({ data: { name, email, username, password } })
+    user = await ctx.prisma.user.create({ data: { email, username, password } })
 
     return {
       userId: user.id,

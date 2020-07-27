@@ -8,7 +8,7 @@ extend type Query {
   groupExists(input: GroupExistsInput!): Boolean!
 
   # GroupMembership
-  myGroupMemberships(input: MyGroupMembershipsInput): [GroupMembership!]
+  myMemberships(input: MyMembershipsInput): [GroupMembership!]
   groupMembers(input: GroupMembersInput!): [GroupMembership!]
 }
 
@@ -35,7 +35,6 @@ extend type Mutation {
 ########################
 type User @key(fields: "id") {
   id: ID!
-  name: String!
   email: String!
   username: String!
   admin: Boolean!
@@ -115,7 +114,8 @@ enum MembershipRole {
   ADMIN
 }
 
-input MyGroupMembershipsInput {
+input MyMembershipsInput {
+  userId: String!
   role: MembershipRole
   status: MembershipStatus
 }
