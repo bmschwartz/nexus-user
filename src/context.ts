@@ -3,12 +3,14 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export interface Context {
-  user: any
+  userId?: number
   prisma: PrismaClient
 }
 
 export function createContext({ req }: any): Context {
-  console.log(req.headers)
-  const user = req.headers.user ? JSON.parse(req.headers.user) : null
-  return { user, prisma }
+  const { userid: userId } = req.headers
+  return {
+    prisma,
+    userId: Number(userId),
+  }
 }
