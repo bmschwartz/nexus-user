@@ -1,21 +1,24 @@
-import { rule, shield, or } from "graphql-shield"
+import { rule, shield, or, and } from "graphql-shield"
 import { Context } from "../context";
+
+export const SITE_PERMISSIONS = {
+  admin: "site:admin",
+  member: "site:member"
+}
 
 const isAuthenticated = rule()((parent, args, { userId }) => {
   return !!userId
 })
 
-const canViewPersonalData = rule({ cache: 'contextual' })(
+const canViewPersonalData = rule({ cache: 'strict' })(
   async (parent, args, ctx: Context) => {
-    console.log(parent)
-    return true
+    return parent.id == ctx.userId
   },
 )
 
 const isPlatformAdmin = rule({ cache: 'contextual' })(
   async (parent: any, args: any, ctx: Context) => {
-
-    return false
+    return ctx.permissions.includes(SITE_PERMISSIONS.admin)
   }
 )
 
@@ -24,6 +27,7 @@ export const permissions = shield({
     me: isAuthenticated,
   },
   User: {
-    admin: or(canViewPersonalData, isPlatformAdmin),
+    admin: and(isAuthenticated, or(canViewPersonalData, isPlatformAdmin)),
+    email: and(isAuthenticated, or(canViewPersonalData, isPlatformAdmin)),
   }
 })

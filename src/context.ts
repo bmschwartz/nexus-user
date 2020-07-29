@@ -9,10 +9,14 @@ export interface Context {
 }
 
 export function createContext({ req }: any): Context {
-  const { userid, permissions } = req.headers
+  let { userid, permissions } = req.headers
+
+  const userId = userid !== 'undefined' ? Number(userid) : undefined
+  permissions = permissions !== 'undefined' ? JSON.parse(permissions) : []
+
   return {
     prisma,
-    userId: Number(userid),
-    permissions: permissions,
+    userId,
+    permissions,
   }
 }

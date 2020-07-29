@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs"
 import * as dotenv from "dotenv"
 import { Context } from "../../context"
 import { UserPermission } from "@prisma/client"
+import { SITE_PERMISSIONS } from "../../permissions"
 
 dotenv.config()
 
@@ -28,19 +29,25 @@ export const UserMutations = {
       return new Error("That username is taken")
     }
 
+    const grantedPermission = SITE_PERMISSIONS.member
+
     user = await ctx.prisma.user.create({
       data: {
         email,
         username,
-        permissions: null,
         password: bcrypt.hashSync(password, 10)
       },
-      include: { permissions: true },
+    })
+    await ctx.prisma.userPermission.create({
+      data: {
+        user: { connect: { username } },
+        permission: { connect: { name: grantedPermission } },
+      }
     })
 
     return {
       token: jwt.sign(
-        { userId: user.id, permissions: [] },
+        { userId: user.id, permissions: JSON.stringify([grantedPermission]) },
         String(process.env.APP_SECRET),
       )
     }
@@ -70,7 +77,7 @@ export const UserMutations = {
 
     return {
       token: jwt.sign(
-        { userId: user.id, permissions: permissionNames },
+        { userId: user.id, permissions: JSON.stringify(permissionNames) },
         String(process.env.APP_SECRET),
       )
     }
@@ -81,6 +88,10 @@ export const UserResolvers = {
   async __resolveReference(user: any, ctx: Context) {
     return await ctx.prisma.user.findOne({ where: { id: Number(user.id) } })
   },
+
+  async admin(parent: any, args: any, ctx: Context) {
+    return ctx.permissions.includes(SITE_PERMISSIONS.admin)
+  }
 }
 
 const validateEmail = (email: string) => {
