@@ -18,6 +18,10 @@ export const UserMutations = {
   async signupUser(parent: any, args: any, ctx: Context) {
     const { input: { email, username, password } } = args
 
+    validateEmail(email)
+    validateUsername(username)
+    validatePassword(password)
+
     let user = await ctx.prisma.user.findOne({ where: { username } })
     if (user) {
       throw new Error("That username is taken")
@@ -57,4 +61,25 @@ export const UserResolvers = {
   async __resolveReference(user: any, ctx: Context) {
     return await ctx.prisma.user.findOne({ where: { id: Number(user.id) } })
   },
+}
+
+const validateEmail = (email: string) => {
+  const regexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+  if (!regexp.test(email)) {
+    throw new Error("Invalid email")
+  }
+}
+
+const validateUsername = (username: string) => {
+  const regex = /^[A-Za-z0-9_-]{3,15}$/
+  if (!regex.test(username)) {
+    throw new Error("Invalid username")
+  }
+}
+
+const validatePassword = (password: string) => {
+  const regex = /(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/
+  if (!regex.test(password)) {
+    throw new Error("Invalid password")
+  }
 }
