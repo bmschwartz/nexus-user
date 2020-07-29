@@ -16,3 +16,12 @@ VALUES ('password', 'rachel@example.com', 'rachel', FALSE);
 
 INSERT INTO "User" (password, email, username, admin)
 VALUES ('password', 'nic@example.com', 'nic', FALSE);
+
+INSERT INTO "Permission" (name, description)
+VALUES ('site:admin', 'Allows access to everything in the site');
+
+INSERT INTO "UserPermission" ("userId", "permissionId")
+VALUES (1, 1);
+
+INSERT INTO "UserPermission" ("userId", "permissionId")
+VALUES (2, 1);

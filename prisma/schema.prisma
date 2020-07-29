@@ -7,11 +7,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Permission {
+  id          Int              @default(autoincrement()) @id
+  name        String           @unique
+  description String
+  users       UserPermission[]
+}
+
 model User {
-  id        Int      @default(autoincrement()) @id
-  password  String
-  email     String
-  username  String   @unique
-  admin     Boolean? @default(false)
-  createdAt DateTime @default(now())
+  id          Int              @default(autoincrement()) @id
+  password    String
+  email       String
+  username    String           @unique
+  createdAt   DateTime         @default(now())
+  permissions UserPermission[]
+}
+
+model UserPermission {
+  id           Int        @default(autoincrement()) @id
+  userId       Int
+  permissionId Int
+  permission   Permission @relation(fields: [permissionId], references: [id])
+  user         User       @relation(fields: [userId], references: [id])
+
+  @@unique([userId, permissionId], name: "UserPermission_userId_permissionId_key")
 }
