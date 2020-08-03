@@ -1,5 +1,5 @@
-DROP DATABASE IF EXISTS "monest_users";
-CREATE DATABASE "monest_users";
+DROP DATABASE IF EXISTS "nexus_users";
+CREATE DATABASE "nexus_users";
 
 CREATE TABLE "public"."User" (
   id SERIAL PRIMARY KEY NOT NULL,

@@ -1,21 +1,21 @@
 /** Users */
-INSERT INTO "User" (password, email, username, admin)
-VALUES ('password', 'ben@example.com', 'ben', TRUE);
+INSERT INTO "User" (password, email, username)
+VALUES ('password', 'ben@example.com', 'ben');
 
-INSERT INTO "User" (password, email, username, admin)
-VALUES ('password', 'xavyr@example.com', 'xavyr', TRUE);
+INSERT INTO "User" (password, email, username)
+VALUES ('password', 'xavyr@example.com', 'xavyr');
 
-INSERT INTO "User" (password, email, username, admin)
-VALUES ('password', 'spenser@example.com', 'spenser', FALSE);
+INSERT INTO "User" (password, email, username)
+VALUES ('password', 'spenser@example.com', 'spenser');
 
-INSERT INTO "User" (password, email, username, admin)
-VALUES ('password', 'sarah@example.com', 'sarah', FALSE);
+INSERT INTO "User" (password, email, username)
+VALUES ('password', 'sarah@example.com', 'sarah');
 
-INSERT INTO "User" (password, email, username, admin)
-VALUES ('password', 'rachel@example.com', 'rachel', FALSE);
+INSERT INTO "User" (password, email, username)
+VALUES ('password', 'rachel@example.com', 'rachel');
 
-INSERT INTO "User" (password, email, username, admin)
-VALUES ('password', 'nic@example.com', 'nic', FALSE);
+INSERT INTO "User" (password, email, username)
+VALUES ('password', 'nic@example.com', 'nic');
 
 
 /** Permission types */
@@ -52,30 +52,3 @@ VALUES (5, 2);
 
 INSERT INTO "UserPermission" ("userId", "permissionId")
 VALUES (6, 2);
-
-INSERT INTO "UserPermission" ("userId", "permissionId")
-VALUES (7, 2);
-
-INSERT INTO "UserPermission" ("userId", "permissionId")
-VALUES (8, 2);
-
-INSERT INTO "UserPermission" ("userId", "permissionId")
-VALUES (9, 2);
-
-INSERT INTO "UserPermission" ("userId", "permissionId")
-VALUES (10, 2);
-
-INSERT INTO "UserPermission" ("userId", "permissionId")
-VALUES (11, 2);
-
-INSERT INTO "UserPermission" ("userId", "permissionId")
-VALUES (12, 2);
-
-INSERT INTO "UserPermission" ("userId", "permissionId")
-VALUES (13, 2);
-
-INSERT INTO "UserPermission" ("userId", "permissionId")
-VALUES (14, 2);
-
-INSERT INTO "UserPermission" ("userId", "permissionId")
-VALUES (15, 2);
