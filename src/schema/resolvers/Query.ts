@@ -1,4 +1,4 @@
-import { UserQuery } from "./User"
+import { UserQuery } from './User'
 
 export const Query = {
   ...UserQuery,

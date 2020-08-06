@@ -1,9 +1,9 @@
-import { rule, shield, or, and } from "graphql-shield"
-import { Context } from "../context";
+import { rule, shield, or, and } from 'graphql-shield'
+import { Context } from '../context'
 
 export const SITE_PERMISSIONS = {
-  admin: "site:admin",
-  member: "site:member"
+  admin: 'site:admin',
+  member: 'site:member',
 }
 
 const isAuthenticated = rule()((parent, args, { userId }) => {
@@ -19,7 +19,7 @@ const canViewPersonalData = rule({ cache: 'strict' })(
 const isPlatformAdmin = rule({ cache: 'contextual' })(
   async (parent: any, args: any, ctx: Context) => {
     return ctx.permissions.includes(SITE_PERMISSIONS.admin)
-  }
+  },
 )
 
 export const permissions = shield({
@@ -29,5 +29,5 @@ export const permissions = shield({
   User: {
     admin: and(isAuthenticated, or(canViewPersonalData, isPlatformAdmin)),
     email: and(isAuthenticated, or(canViewPersonalData, isPlatformAdmin)),
-  }
+  },
 })

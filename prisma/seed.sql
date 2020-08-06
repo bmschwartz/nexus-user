@@ -1,21 +1,21 @@
 /** Users */
 INSERT INTO "User" (password, email, username)
-VALUES ('password', 'ben@example.com', 'ben');
+VALUES ('$2a$10$pRiUYltGoZ0eJQDg3TyKD.d34n3o0T1a8wDIpe11pvhNBVTSZyBPy', 'ben@example.com', 'ben');
 
 INSERT INTO "User" (password, email, username)
-VALUES ('password', 'xavyr@example.com', 'xavyr');
+VALUES ('$2a$10$pRiUYltGoZ0eJQDg3TyKD.d34n3o0T1a8wDIpe11pvhNBVTSZyBPy', 'xavyr@example.com', 'xavyr');
 
 INSERT INTO "User" (password, email, username)
-VALUES ('password', 'spenser@example.com', 'spenser');
+VALUES ('$2a$10$pRiUYltGoZ0eJQDg3TyKD.d34n3o0T1a8wDIpe11pvhNBVTSZyBPy', 'spenser@example.com', 'spenser');
 
 INSERT INTO "User" (password, email, username)
-VALUES ('password', 'sarah@example.com', 'sarah');
+VALUES ('$2a$10$pRiUYltGoZ0eJQDg3TyKD.d34n3o0T1a8wDIpe11pvhNBVTSZyBPy', 'sarah@example.com', 'sarah');
 
 INSERT INTO "User" (password, email, username)
-VALUES ('password', 'rachel@example.com', 'rachel');
+VALUES ('$2a$10$pRiUYltGoZ0eJQDg3TyKD.d34n3o0T1a8wDIpe11pvhNBVTSZyBPy', 'rachel@example.com', 'rachel');
 
 INSERT INTO "User" (password, email, username)
-VALUES ('password', 'nic@example.com', 'nic');
+VALUES ('$2a$10$pRiUYltGoZ0eJQDg3TyKD.d34n3o0T1a8wDIpe11pvhNBVTSZyBPy', 'nic@example.com', 'nic');
 
 
 /** Permission types */

@@ -1,4 +1,4 @@
-import { UserMutations } from "./User"
+import { UserMutations } from './User'
 
 export const Mutation = {
   ...UserMutations,
