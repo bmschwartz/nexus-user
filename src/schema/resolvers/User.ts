@@ -103,6 +103,7 @@ const validateEmail = (email: string) => {
   if (!regexp.test(email)) {
     return new Error("Invalid email")
   }
+  return null
 }
 
 const validateUsername = (username: string) => {
@@ -110,6 +111,7 @@ const validateUsername = (username: string) => {
   if (!regex.test(username)) {
     return new Error("Invalid username")
   }
+  return null
 }
 
 const validatePassword = (password: string) => {
@@ -117,6 +119,7 @@ const validatePassword = (password: string) => {
   if (!regex.test(password)) {
     return new Error("Invalid password")
   }
+  return null
 }
 
 const getPermissionNames = async (
