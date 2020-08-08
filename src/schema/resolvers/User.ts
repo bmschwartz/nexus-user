@@ -1,16 +1,16 @@
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcryptjs'
-import * as dotenv from 'dotenv'
-import { Context } from '../../context'
-import { UserPermission } from '@prisma/client'
-import { SITE_PERMISSIONS } from '../../permissions'
+import jwt from "jsonwebtoken"
+import bcrypt from "bcryptjs"
+import * as dotenv from "dotenv"
+import { Context } from "../../context"
+import { UserPermission } from "@prisma/client"
+import { SITE_PERMISSIONS } from "../../permissions"
 
 dotenv.config()
 
 export const UserQuery = {
   async me(parent: any, args: any, { prisma, userId }: Context) {
     if (!userId) {
-      return new Error('Not logged in')
+      return new Error("Not logged in")
     }
     return await prisma.user.findOne({ where: { id: userId } })
   },
@@ -28,7 +28,7 @@ export const UserMutations = {
 
     let user = await ctx.prisma.user.findOne({ where: { username } })
     if (user) {
-      return new Error('That username is taken')
+      return new Error("That username is taken")
     }
 
     const grantedPermission = SITE_PERMISSIONS.member
@@ -70,11 +70,11 @@ export const UserMutations = {
     const permissionNames = await getPermissionNames(ctx, user?.permissions)
 
     if (!user) {
-      return new Error('Invalid username or password')
+      return new Error("Invalid username or password")
     }
     const isMatch = bcrypt.compareSync(password, user.password)
     if (!isMatch) {
-      return new Error('Invalid username or password')
+      return new Error("Invalid username or password")
     }
 
     return {
@@ -101,21 +101,21 @@ const validateEmail = (email: string) => {
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   )
   if (!regexp.test(email)) {
-    return new Error('Invalid email')
+    return new Error("Invalid email")
   }
 }
 
 const validateUsername = (username: string) => {
   const regex = /^[A-Za-z0-9_-]{3,15}$/
   if (!regex.test(username)) {
-    return new Error('Invalid username')
+    return new Error("Invalid username")
   }
 }
 
 const validatePassword = (password: string) => {
   const regex = /(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/
   if (!regex.test(password)) {
-    return new Error('Invalid password')
+    return new Error("Invalid password")
   }
 }
 
