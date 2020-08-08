@@ -12,7 +12,7 @@ const isAuthenticated = rule()((parent, args, { userId }) => {
 
 const canViewPersonalData = rule({ cache: "strict" })(
   async (parent, args, ctx: Context) => {
-    return parent.id == ctx.userId
+    return parent.id === ctx.userId
   },
 )
 
