@@ -20,7 +20,8 @@ type User @key(fields: "id") {
 }
 
 input LoginUserInput {
-  username: String!
+  email: String
+  username: String
   password: String!
 }
 

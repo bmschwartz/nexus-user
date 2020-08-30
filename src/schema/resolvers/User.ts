@@ -26,14 +26,29 @@ export const UserMutations = {
     validateUsername(username)
     validatePassword(password)
 
-    let user = await ctx.prisma.user.findOne({ where: { username } })
-    if (user) {
-      return new Error("That username is taken")
+    const users = await ctx.prisma.user.findMany({
+      where: {
+        OR: [
+          {
+            username: {
+              equals: username,
+            },
+          },
+          {
+            email: {
+              equals: email,
+            },
+          },
+        ],
+      },
+    })
+    if (users) {
+      return new Error("An account with that email or username already exists")
     }
 
     const grantedPermission = SITE_PERMISSIONS.member
 
-    user = await ctx.prisma.user.create({
+    const user = await ctx.prisma.user.create({
       data: {
         email,
         username,
@@ -57,10 +72,12 @@ export const UserMutations = {
 
   async loginUser(parent: any, args: any, ctx: Context) {
     const {
-      input: { username, password },
+      input: { email, username, password },
     } = args
+
+    const whereClause = email ? { email } : { username }
     const user = await ctx.prisma.user.findOne({
-      where: { username },
+      where: whereClause,
       include: { permissions: true },
     })
     if (!user) {

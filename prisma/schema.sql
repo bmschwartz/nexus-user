@@ -31,3 +31,7 @@ ALTER TABLE "public"."User"
 ALTER TABLE "public"."Permission"
     ADD CONSTRAINT Permission_name_key
     UNIQUE (name);
+
+ALTER TABLE "public"."User"
+  ADD CONSTRAINT User_email_key
+  UNIQUE (email);

@@ -17,7 +17,7 @@ model Permission {
 model User {
   id          Int              @default(autoincrement()) @id
   password    String
-  email       String
+  email       String           @unique
   username    String           @unique
   createdAt   DateTime         @default(now())
   permissions UserPermission[]
