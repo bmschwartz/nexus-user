@@ -72,26 +72,25 @@ export const UserMutations = {
 
   async loginUser(parent: any, args: any, ctx: Context) {
     const {
-      input: { email, username, password },
+      input: { email, password },
     } = args
 
-    const whereClause = email ? { email } : { username }
     const user = await ctx.prisma.user.findOne({
-      where: whereClause,
+      where: { email },
       include: { permissions: true },
     })
     if (!user) {
-      return {}
+      return new Error("Invalid email or password")
     }
 
     const permissionNames = await getPermissionNames(ctx, user?.permissions)
 
     if (!user) {
-      return new Error("Invalid username or password")
+      return new Error("Invalid email or password")
     }
     const isMatch = bcrypt.compareSync(password, user.password)
     if (!isMatch) {
-      return new Error("Invalid username or password")
+      return new Error("Invalid email or password")
     }
 
     return {
