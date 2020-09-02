@@ -66,6 +66,7 @@ export const UserMutations = {
       token: jwt.sign(
         { userId: user.id, permissions: JSON.stringify([grantedPermission]) },
         String(process.env.APP_SECRET),
+        { expiresIn: "24h" },
       ),
     }
   },
@@ -97,6 +98,7 @@ export const UserMutations = {
       token: jwt.sign(
         { userId: user.id, permissions: JSON.stringify(permissionNames) },
         String(process.env.APP_SECRET),
+        { expiresIn: "24h" },
       ),
     }
   },
