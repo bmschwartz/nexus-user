@@ -22,9 +22,17 @@ export const UserMutations = {
       input: { email, username, password },
     } = args
 
-    validateEmail(email)
-    validateUsername(username)
-    validatePassword(password)
+    const emailError = validateEmail(email)
+    const usernameError = validateUsername(username)
+    const passwordError = validatePassword(password)
+
+    if (emailError) {
+      return emailError
+    } else if (usernameError) {
+      return usernameError
+    } else if (passwordError) {
+      return passwordError
+    }
 
     const users = await ctx.prisma.user.findMany({
       where: {
@@ -42,7 +50,7 @@ export const UserMutations = {
         ],
       },
     })
-    if (users) {
+    if (users.length > 0) {
       return new Error("An account with that email or username already exists")
     }
 
@@ -127,6 +135,7 @@ const validateEmail = (email: string) => {
 const validateUsername = (username: string) => {
   const regex = /^[A-Za-z0-9_-]{3,15}$/
   if (!regex.test(username)) {
+    console.log("invalid username!")
     return new Error("Invalid username")
   }
   return null
@@ -135,6 +144,7 @@ const validateUsername = (username: string) => {
 const validatePassword = (password: string) => {
   const regex = /(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/
   if (!regex.test(password)) {
+    console.log("invalid password!")
     return new Error("Invalid password")
   }
   return null
