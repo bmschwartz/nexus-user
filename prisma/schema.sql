@@ -35,3 +35,7 @@ ALTER TABLE "public"."Permission"
 ALTER TABLE "public"."User"
   ADD CONSTRAINT User_email_key
   UNIQUE (email);
+
+------- ADD DATE FIELDS -------
+ALTER TABLE "public"."User"
+  ADD COLUMN "updatedAt" TIMESTAMP NOT NULL DEFAULT now();
