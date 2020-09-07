@@ -1,3 +1,5 @@
+scalar DateTime
+
 extend type Query {
   # User
   me: User
@@ -14,6 +16,8 @@ extend type Mutation {
 ########################
 type User @key(fields: "id") {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   email: String!
   username: String!
   admin: Boolean!
