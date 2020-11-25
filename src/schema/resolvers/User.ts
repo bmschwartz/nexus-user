@@ -12,7 +12,7 @@ export const UserQuery = {
     if (!userId) {
       return new Error("Not logged in")
     }
-    return await prisma.user.findOne({ where: { id: userId } })
+    return await prisma.user.findUnique({ where: { id: userId } })
   },
 }
 
@@ -40,11 +40,13 @@ export const UserMutations = {
           {
             username: {
               equals: username,
+              mode: "insensitive",
             },
           },
           {
             email: {
               equals: email,
+              mode: "insensitive",
             },
           },
         ],
@@ -84,7 +86,7 @@ export const UserMutations = {
       input: { email, password },
     } = args
 
-    const user = await ctx.prisma.user.findOne({
+    const user = await ctx.prisma.user.findUnique({
       where: { email },
       include: { permissions: true },
     })
@@ -114,7 +116,7 @@ export const UserMutations = {
 
 export const UserResolvers = {
   async __resolveReference(user: any, ctx: Context) {
-    return await ctx.prisma.user.findOne({ where: { id: Number(user.id) } })
+    return await ctx.prisma.user.findUnique({ where: { id: Number(user.id) } })
   },
 
   async admin(parent: any, args: any, ctx: Context) {
