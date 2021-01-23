@@ -1,8 +1,9 @@
 DROP DATABASE IF EXISTS "nexus_users";
 CREATE DATABASE "nexus_users";
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE "public"."User" (
-  id SERIAL PRIMARY KEY NOT NULL,
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   password VARCHAR(255) NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,
   username VARCHAR(255) UNIQUE NOT NULL,
@@ -11,15 +12,15 @@ CREATE TABLE "public"."User" (
 );
 
 CREATE TABLE "public"."Permission" (
-  id SERIAL PRIMARY KEY NOT NULL,
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   name VARCHAR(255) UNIQUE NOT NULL,
   description VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE "public"."UserPermission" (
-  id SERIAL PRIMARY KEY NOT NULL,
-  "userId" INTEGER NOT NULL,
-  "permissionId" INTEGER NOT NULL,
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "userId" uuid NOT NULL,
+  "permissionId" uuid NOT NULL,
   UNIQUE("userId", "permissionId"),
   FOREIGN KEY ("userId") REFERENCES "public"."User"(id),
   FOREIGN KEY ("permissionId") REFERENCES "public"."Permission"(id)

@@ -1,5 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -8,14 +8,16 @@ datasource db {
 }
 
 model Permission {
-  id          Int              @default(autoincrement()) @id
+  /// This field's default value can currently not be parsed: `uuid_generate_v4()`.
+  id          String           @id @default(dbgenerated())
   name        String           @unique
   description String
   users       UserPermission[]
 }
 
 model User {
-  id          Int              @default(autoincrement()) @id
+  /// This field's default value can currently not be parsed: `uuid_generate_v4()`.
+  id          String           @id @default(dbgenerated())
   password    String
   email       String           @unique
   username    String           @unique
@@ -25,9 +27,10 @@ model User {
 }
 
 model UserPermission {
-  id           Int        @default(autoincrement()) @id
-  userId       Int
-  permissionId Int
+  /// This field's default value can currently not be parsed: `uuid_generate_v4()`.
+  id           String     @id @default(dbgenerated())
+  userId       String
+  permissionId String
   permission   Permission @relation(fields: [permissionId], references: [id])
   user         User       @relation(fields: [userId], references: [id])
 
