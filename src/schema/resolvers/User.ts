@@ -116,7 +116,7 @@ export const UserMutations = {
 
 export const UserResolvers = {
   async __resolveReference(user: any, ctx: Context) {
-    return await ctx.prisma.user.findUnique({ where: { id: Number(user.id) } })
+    return await ctx.prisma.user.findUnique({ where: { id: user.id } })
   },
 
   async admin(parent: any, args: any, ctx: Context) {
