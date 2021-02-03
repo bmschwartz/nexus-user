@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@apollo/federation": "^0.18.1",
-    "@prisma/client": "^2.15.0",
+    "@prisma/client": "^2.16.0",
     "apollo": "^2.30.2",
     "apollo-server": "2.15.1",
     "bcryptjs": "^2.4.3",
@@ -22,13 +22,13 @@
     "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
-    "@prisma/cli": "^2.15.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/node": "12.12.50",
     "dotenv": "^8.2.0",
     "fs": "0.0.1-security",
     "path": "^0.12.7",
+    "prisma": "^2.16.0",
     "ts-node": "8.10.2",
     "ts-node-dev": "1.0.0-pre.50",
     "tslint": "^6.1.3",
