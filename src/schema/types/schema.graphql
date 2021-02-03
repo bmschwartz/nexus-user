@@ -3,6 +3,8 @@ scalar DateTime
 extend type Query {
   # User
   me: User
+
+  userIdByEmail(input: UserIdByEmailInput!): ID
 }
 
 extend type Mutation {
@@ -36,4 +38,8 @@ input SignupUserInput {
 
 type AuthPayload {
   token: String!
+}
+
+input UserIdByEmailInput {
+  email: String!
 }

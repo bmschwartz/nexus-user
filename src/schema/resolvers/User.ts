@@ -14,6 +14,19 @@ export const UserQuery = {
     }
     return await prisma.user.findUnique({ where: { id: userId } })
   },
+
+  async userIdByEmail(parent: any, args: any, ctx: Context) {
+    const {
+      input: { email },
+    } = args
+
+    const user = await ctx.prisma.user.findUnique({
+      where: { email },
+      select: { id: true },
+    })
+
+    return user?.id
+  },
 }
 
 export const UserMutations = {
