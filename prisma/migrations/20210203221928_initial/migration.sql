@@ -1,3 +1,5 @@
+CREATE EXTENSION "pgcrypto";
+
 -- CreateTable
 CREATE TABLE "Permission" (
     "id" UUID NOT NULL,
