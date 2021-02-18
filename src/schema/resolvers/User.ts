@@ -148,7 +148,7 @@ const validateEmail = (email: string) => {
 }
 
 const validateUsername = (username: string) => {
-  const regex = /^[A-Za-z0-9_-]{3,15}$/
+  const regex = /^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/
   if (!regex.test(username)) {
     console.log("invalid username!")
     return new Error("Invalid username")
