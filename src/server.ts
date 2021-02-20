@@ -6,6 +6,7 @@ import { typeDefs } from "./schema/types"
 import { resolvers } from "./schema/resolvers"
 import { createContext } from "./context"
 import { permissions } from "./permissions"
+import { logger } from "./logger";
 
 const server = new ApolloServer({
   schema: applyMiddleware(
@@ -20,5 +21,5 @@ const server = new ApolloServer({
 })
 
 server.listen({ port: 4003 }).then(({ url }) => {
-  console.log(`🚀 Server ready at ${url}`)
+  logger.info({ message: `Server ready at ${url}` })
 })
