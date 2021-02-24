@@ -25,14 +25,6 @@ async function main() {
     create: {
       email: "ben@example.com",
       username: "ben",
-      password: "$2a$10$jHjcN/MxV/2bAl.0de/DwOQyjtFY2rGUsobjiL6Rgic1W4ab.K/Dy",
-      permissions: {
-        create: {
-          permission: {
-            connect: {id: memberPermission.id},
-          },
-        },
-      },
     },
   })
 
@@ -42,14 +34,6 @@ async function main() {
     create: {
       email: "scot@example.com",
       username: "scot",
-      password: "$2a$10$jHjcN/MxV/2bAl.0de/DwOQyjtFY2rGUsobjiL6Rgic1W4ab.K/Dy",
-      permissions: {
-        create: {
-          permission: {
-            connect: {id: memberPermission.id},
-          },
-        },
-      },
     },
   })
 }

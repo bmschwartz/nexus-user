@@ -9,8 +9,9 @@ extend type Query {
 
 extend type Mutation {
   # User
-  loginUser(input: LoginUserInput!): AuthPayload!
-  signupUser(input: SignupUserInput!): AuthPayload!
+  loginUser(input: LoginUserInput!): LoginResponse!
+  signupUser(input: SignupUserInput!): SignUpResponse!
+  verifySignUpCode(input: VerifySignUpCodeInput!): VerifySignUpCodeResponse!
 }
 
 ########################
@@ -36,10 +37,25 @@ input SignupUserInput {
   password: String!
 }
 
-type AuthPayload {
-  token: String!
-}
-
 input UserIdByEmailInput {
   email: String!
+}
+
+input VerifySignUpCodeInput {
+  email: String!
+  code: String!
+}
+
+type LoginResponse {
+  token: String
+}
+
+type VerifySignUpCodeResponse {
+  success: Boolean!
+  error: String
+}
+
+type SignUpResponse {
+  success: Boolean!
+  error: String
 }

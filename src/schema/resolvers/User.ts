@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken"
-import bcrypt from "bcryptjs"
 import * as dotenv from "dotenv"
+import {Auth as AmplifyAuth} from "aws-amplify";
+
 import { Context } from "../../context"
-import { UserPermission, User } from "@prisma/client"
-import { SITE_PERMISSIONS } from "../../permissions"
+import { User } from "@prisma/client"
 import {logger} from "../../logger";
 
 dotenv.config()
@@ -46,79 +46,71 @@ export const UserMutations = {
 
     const emailError = validateEmail(email)
     const usernameError = validateUsername(username)
-    const passwordError = validatePassword(password)
 
     if (emailError) {
       logger.info({ message: "Sign Up Error", emailError })
-      return emailError
+      return { success: false, error: "Invalid email" }
     } else if (usernameError) {
-      logger.info({ message: "Sign Up Error", usernameError })
-      return usernameError
-    } else if (passwordError) {
-      logger.info({ message: "Sign Up Error", passwordError })
-      return passwordError
+      logger.info({message: "Sign Up Error", usernameError})
+      return {success: false, error: "Invalid username"}
     }
 
-    let users: User[]
+    const userExists = await checkIfUserExists(ctx, email, username)
+    if (userExists) {
+      logger.info({ message: "User or email already exists", email, username })
+      return { success: false, error: "Email or username already exists"}
+    }
+
+    let userSub
     try {
-      users = await ctx.prisma.user.findMany({
-        where: {
-          OR: [
-            {
-              username: {
-                equals: username,
-                mode: "insensitive",
-              },
-            },
-            {
-              email: {
-                equals: email,
-                mode: "insensitive",
-              },
-            },
-          ],
-        },
+      const result = await AmplifyAuth.signUp({
+        username: email, password, attributes: {email},
       })
-      if (users.length > 0) {
-        const error = new Error("An account with that email or username already exists")
-        logger.info({ message: "Sign Up Error", error })
-        return error
-      }
+      userSub = result.userSub
     } catch (e) {
-      logger.info({ message: "Sign Up Error", error: e })
+      logger.info({ message: "Amplify sign up failed", username, email })
+      return { success: false, error: "Registration Error"}
     }
-
-    const grantedPermission = SITE_PERMISSIONS.member
 
     let user: User
 
     try {
       user = await ctx.prisma.user.create({
         data: {
+          id: userSub,
           email,
           username,
-          password: bcrypt.hashSync(password, 10),
-        },
-      })
-      await ctx.prisma.userPermission.create({
-        data: {
-          user: {connect: {username}},
-          permission: {connect: {name: grantedPermission}},
         },
       })
 
-      return {
-        token: jwt.sign(
-          { userId: user.id, permissions: JSON.stringify([grantedPermission]) },
-          String(process.env.APP_SECRET),
-          { expiresIn: "24h" },
-        ),
-      }
+      return { success: true }
     } catch (e) {
       logger.info({ message: "Sign Up Error", error: e })
     }
 
-    return null
+    return { success: false, error: "Signup Error" }
+  },
+
+  async verifySignUpCode(parent: any, args: any, ctx: Context) {
+    const {
+      input: { email, code },
+    } = args
+
+    const user = await ctx.prisma.user.findUnique({
+      where: { email },
+    })
+    if (!user) {
+      logger.info({ message: "Verify Code Error - User does not exist", email })
+      return { success: false, error: "No user matches that email"}
+    }
+
+    try {
+      await AmplifyAuth.confirmSignUp(email, code)
+    } catch (e) {
+      logger.info({ message: "Amplify Error - Invalid registration code", email })
+      return { success: false, error: "Error confirming token"}
+    }
+    return { success: true }
   },
 
   async loginUser(parent: any, args: any, ctx: Context) {
@@ -128,32 +120,17 @@ export const UserMutations = {
 
     const user = await ctx.prisma.user.findUnique({
       where: { email },
-      include: { permissions: true },
     })
     if (!user) {
-      logger.info({ message: "Login Error - Invalid email or password", email })
-      return new Error("Invalid email or password")
-    }
-
-    let permissionNames: string[] = []
-
-    try {
-      permissionNames = await getPermissionNames(ctx, user.permissions)
-    } catch (e) {
-      logger.error({ message: "Error getPermissionNames", error: e })
-    }
-
-    const isMatch = bcrypt.compareSync(password, user.password)
-    if (!isMatch) {
-      logger.error({ message: "Login Error", error: "Invalid password match" })
-      return new Error("Invalid email or password")
+      logger.info({ message: "Login Error - User does not exist", email })
+      return { success: false, error: "Invalid email and password combination"}
     }
 
     try {
-      const permissions: string = JSON.stringify(permissionNames)
+      await AmplifyAuth.signIn(email, password)
       return {
         token: jwt.sign(
-          { userId: user.id, permissions },
+          { userId: user.id },
           String(process.env.APP_SECRET),
           { expiresIn: "24h" },
         ),
@@ -161,22 +138,13 @@ export const UserMutations = {
     } catch (e) {
       logger.error({ message: "Login Error", error: e })
     }
-    return null
+    return { token: null }
   },
 }
 
 export const UserResolvers = {
   async __resolveReference(user: any, ctx: Context) {
     return await ctx.prisma.user.findUnique({ where: { id: user.id } })
-  },
-
-  async admin(parent: any, args: any, ctx: Context) {
-    try {
-      return ctx.permissions.includes(SITE_PERMISSIONS.admin)
-    } catch (error) {
-      logger.error({ message: "Resolver Error [User.admin]", error })
-    }
-    return false
   },
 }
 
@@ -192,7 +160,7 @@ const validateEmail = (email: string) => {
 }
 
 const validateUsername = (username: string) => {
-  const regex = /^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/
+  const regex = /^(?=.{3,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/
   if (!regex.test(username)) {
     logger.info({ message: "Invalid username error", username })
     return new Error("Invalid username")
@@ -200,26 +168,32 @@ const validateUsername = (username: string) => {
   return null
 }
 
-const validatePassword = (password: string) => {
-  const regex = /(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/
-  if (!regex.test(password)) {
-    logger.info({ message: "Invalid password", password })
-    return new Error("Invalid password")
-  }
-  return null
-}
-
-const getPermissionNames = async (
-  ctx: Context,
-  userPermissions: UserPermission[],
-) => {
-  const permissions = await ctx.prisma.permission.findMany({
-    where: {
-      id: {
-        in: userPermissions.map((p) => p.permissionId),
+const checkIfUserExists = async (ctx: Context, email: string, username: string) => {
+  let users: User[]
+  try {
+    users = await ctx.prisma.user.findMany({
+      where: {
+        OR: [
+          {
+            username: {
+              equals: username,
+              mode: "insensitive",
+            },
+          },
+          {
+            email: {
+              equals: email,
+              mode: "insensitive",
+            },
+          },
+        ],
       },
-    },
-    select: { name: true },
-  })
-  return permissions.map((p) => p.name)
+    })
+    if (users.length > 0) {
+      return true
+    }
+  } catch (e) {
+    return true
+  }
+  return false
 }
