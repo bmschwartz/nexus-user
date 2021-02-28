@@ -4,7 +4,7 @@
 export const awsExports = {
     "aws_project_region": "us-east-1",
     "aws_cognito_region": "us-east-1",
-    "aws_user_pools_id": "us-east-1_GDTDl9oOR",
-    "aws_user_pools_web_client_id": "1vkh7pdmkr6e4mmp2knvq0jh04",
+    "aws_user_pools_id": "us-east-1_x35b5R7fc",
+    "aws_user_pools_web_client_id": "797mk3moh4j7eqaaa116ogbgnn",
     "oauth": {},
 };

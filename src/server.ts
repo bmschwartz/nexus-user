@@ -8,7 +8,7 @@ import { resolvers } from "./schema/resolvers"
 import { createContext } from "./context"
 import { permissions } from "./permissions"
 import { logger } from "./logger";
-import {awsExports} from "./aws-exports"
+import { awsExports } from "./aws-exports"
 
 Amplify.configure(awsExports)
 AmplifyAuth.configure(awsExports)
