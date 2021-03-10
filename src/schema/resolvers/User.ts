@@ -41,11 +41,12 @@ export const UserQuery = {
 export const UserMutations = {
   async signupUser(parent: any, args: any, ctx: Context) {
     const {
-      input: { email, username, password },
+      input: { email, username, password, userType },
     } = args
 
     const emailError = validateEmail(email)
     const usernameError = validateUsername(username)
+    const userTypeError = validateUserType(userType)
 
     if (emailError) {
       logger.info({ message: "Sign Up Error", emailError })
@@ -53,6 +54,9 @@ export const UserMutations = {
     } else if (usernameError) {
       logger.info({message: "Sign Up Error", usernameError})
       return {success: false, error: "Invalid username"}
+    } else if (userTypeError) {
+      logger.info({message: "Sign Up Error", userTypeError})
+      return {success: false, error: "Invalid user type"}
     }
 
     const userExists = await checkIfUserExists(ctx, email, username)
@@ -68,8 +72,8 @@ export const UserMutations = {
       })
       userSub = result.userSub
     } catch (e) {
-      logger.info({ message: "Amplify sign up failed", username, email })
-      return { success: false, error: "Registration Error"}
+      logger.info({ message: e.message, username, email })
+      return { success: false, error: "Please contact support@tradenexus.io"}
     }
 
     let user: User
@@ -79,6 +83,7 @@ export const UserMutations = {
         data: {
           id: userSub,
           email,
+          userType,
           username,
         },
       })
@@ -130,7 +135,7 @@ export const UserMutations = {
       await AmplifyAuth.signIn(email, password)
       return {
         token: jwt.sign(
-          { userId: user.id },
+          { userId: user.id, userType: user.userType },
           String(process.env.APP_SECRET),
           { expiresIn: "24h" },
         ),
@@ -166,6 +171,12 @@ const validateUsername = (username: string) => {
     return new Error("Invalid username")
   }
   return null
+}
+
+const validateUserType = (userType: string) => {
+  if (!["OWNER", "TRADER", "MEMBER"].includes(userType)) {
+    return new Error("Invalid user type!")
+  }
 }
 
 const checkIfUserExists = async (ctx: Context, email: string, username: string) => {

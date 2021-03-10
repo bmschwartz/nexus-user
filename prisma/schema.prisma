@@ -11,6 +11,13 @@ model User {
   id          String           @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
   email       String           @unique
   username    String           @unique
+  userType    UserType         @default(MEMBER)
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @default(now())
+}
+
+enum UserType {
+  OWNER
+  TRADER
+  MEMBER
 }

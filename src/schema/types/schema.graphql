@@ -35,6 +35,7 @@ input SignupUserInput {
   email: String!
   username: String!
   password: String!
+  userType: UserType!
 }
 
 input UserIdByEmailInput {
@@ -58,4 +59,10 @@ type VerifySignUpCodeResponse {
 type SignUpResponse {
   success: Boolean!
   error: String
+}
+
+enum UserType {
+  OWNER
+  TRADER
+  MEMBER
 }
