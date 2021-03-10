@@ -23,6 +23,7 @@ type User @key(fields: "id") {
   updatedAt: DateTime!
   email: String!
   username: String!
+  userType: UserType!
   admin: Boolean!
 }
 
