@@ -19,13 +19,15 @@ AmplifyAuth.configure(awsExports)
 const app = express()
 app.use(bodyParser.json())
 
+const graphVariant = process.env.APOLLO_GRAPH_VARIANT || "current"
+
 const server = new ApolloServer({
   schema: applyMiddleware(
     buildFederatedSchema([{ typeDefs, resolvers }]),
     permissions,
   ),
   engine: {
-    graphVariant: "current",
+    graphVariant,
   },
   context: createContext,
   introspection: true,
