@@ -105,17 +105,19 @@ export const UserMutations = {
       where: { email },
     })
     if (!user) {
-      logger.info({ message: "Verify Code Error - User does not exist", email })
-      return { success: false, error: "No user matches that email"}
+      logger.info({ message: "Verify Code Error - User does not exist", email, code })
+      return { token: null, error: "Invalid Email or Code"}
     }
 
     try {
       await AmplifyAuth.confirmSignUp(email, code)
     } catch (e) {
-      logger.info({ message: "Amplify Error - Invalid registration code", email })
-      return { success: false, error: "Error confirming token"}
+      logger.info({ message: "Amplify Error - Invalid registration code", email, code })
+      return { token: null, error: "Invalid Email or Code"}
     }
-    return { success: true }
+    return {
+      token: generateToken(user.id, user.userType),
+    }
   },
 
   async loginUser(parent: any, args: any, ctx: Context) {
@@ -128,17 +130,13 @@ export const UserMutations = {
     })
     if (!user) {
       logger.info({ message: "Login Error - User does not exist", email })
-      return { success: false, error: "Invalid email and password combination"}
+      return { token: null, error: "Invalid email and password combination"}
     }
 
     try {
       await AmplifyAuth.signIn(email, password)
       return {
-        token: jwt.sign(
-          { userId: user.id, userType: user.userType },
-          String(process.env.APP_SECRET),
-          { expiresIn: "24h" },
-        ),
+        token: generateToken(user.id, user.userType),
       }
     } catch (e) {
       logger.error({ message: "Login Error", error: e })
@@ -151,6 +149,14 @@ export const UserResolvers = {
   async __resolveReference(user: any, ctx: Context) {
     return await ctx.prisma.user.findUnique({ where: { id: user.id } })
   },
+}
+
+const generateToken = (userId: string, userType: string) => {
+  return jwt.sign(
+    { userId, userType },
+    String(process.env.APP_SECRET),
+    { expiresIn: "24h" },
+  )
 }
 
 const validateEmail = (email: string) => {

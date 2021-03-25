@@ -53,7 +53,7 @@ type LoginResponse {
 }
 
 type VerifySignUpCodeResponse {
-  success: Boolean!
+  token: String
   error: String
 }
 
