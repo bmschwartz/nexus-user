@@ -14,6 +14,7 @@ const canViewPersonalData = rule({ cache: "strict" })(
 export const permissions = shield({
   Query: {
     me: isAuthenticated,
+    userIdByEmail: isAuthenticated,
   },
   User: {
     admin: and(isAuthenticated, canViewPersonalData),
